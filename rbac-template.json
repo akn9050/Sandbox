@@ -8,19 +8,25 @@
     "principalId": {
       "type": "string"
     },
-    "builtInRoleType": {
+    "roleType": {
       "type": "string",
       "allowedValues": [
         "Owner",
         "Contributor",
-        "Reader"
+        "Reader",
+        "Custom"
       ]
+    },
+    "customRoleId": {
+      "type": "string",
+      "defaultValue": ""
     }
   },
   "variables": {
     "Owner": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
     "Contributor": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
     "Reader": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+    "Custom": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', parameters('customRoleId'))]",
     "scope": "[resourceGroup().id]"
   },
   "resources": [
@@ -29,7 +35,7 @@
       "type": "Microsoft.Authorization/roleAssignments",
       "name": "[parameters('roleAssignmentName')]",
       "properties": {
-        "roleDefinitionId": "[variables(parameters('builtInRoleType'))]",
+        "roleDefinitionId": "[variables(parameters('roleType'))]",
         "principalId": "[parameters('principalId')]",
         "scope": "[variables('scope')]"
       }
