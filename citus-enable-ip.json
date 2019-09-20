@@ -1,0 +1,53 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+  },
+  "variables": {
+    "virtualNetworkName": "vNet",
+    "vmName": "dms-dev-vm",
+    "virtualMachineSize": "Standard_DS3_v2",
+    "networkInterfaceName": "[concat(variables('vmName'), '-nic')]",
+    "networkSecurityGroupName": "[concat(variables('vmName'), '-nsg')]",
+    "publicIpAddressName": "[concat(variables('vmName'), '-pip')]",
+    "publicIpAddressDNSName": "[concat('labvm', uniqueString(resourceGroup().id))]",
+    "subnetName": "subnet1",
+    "location": "[resourceGroup().location]",
+    "subnetRef": "[resourceId('Microsoft.Network/virtualNetworks/subnets/',variables('virtualNetworkName'), variables('subnetName'))]",
+    "citusAdminLogin": "citus",
+    "api": "2018-03-29-privatepreview",
+    "serverGroup": "[concat('citus-lab-', uniqueString(resourceGroup().id))]",
+    "serverGroupName": "[variables('serverGroup')]",
+    "coordName": "[concat(variables('serverGroup'), '-c')]",
+    "serverSuffix": "[variables('serverGroup')]"
+  },
+  "resources": [
+      {
+        "type": "Microsoft.Network/publicIPAddresses",
+        "name": "[variables('publicIpAddressName')]",
+        "apiVersion": "2018-01-01",
+        "location": "[variables('location')]",
+        "tags": {},
+        "properties": {
+          "publicIPAllocationMethod": "Dynamic",
+          "dnsSettings": {
+            "domainNameLabel": "[concat(variables('publicIpAddressDNSName'))]"
+          }
+        }
+      },
+      {
+        "type": "Microsoft.DBforPostgreSQL/serversv2/firewallRules",
+        "name": "[concat(variables('coordName'),'/JumpVM-ET')]",
+        "apiVersion": "[variables('api')]",
+        "dependsOn": [
+            "[concat('Microsoft.Network/publicIpAddresses/', variables('publicIpAddressName'))]"
+        ],
+        "properties": {
+            "StartIpAddress": "[reference(resourceId('Microsoft.Network/publicIPAddresses',variables('publicIpAddressName'))).ipAddress]",
+            "EndIpAddress": "[reference(resourceId('Microsoft.Network/publicIPAddresses',variables('publicIpAddressName'))).ipAddress]"
+        }
+    }
+  ],
+  "outputs": {   
+  }
+}
