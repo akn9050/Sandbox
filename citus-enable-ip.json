@@ -9,7 +9,7 @@
     "virtualMachineSize": "Standard_DS3_v2",
     "networkInterfaceName": "[concat(variables('vmName'), '-nic')]",
     "networkSecurityGroupName": "[concat(variables('vmName'), '-nsg')]",
-    "publicIpAddressName": "[concat(variables('vmName'), '-pip')]",
+    "publicIpAddressName": "pip-jumpvm",
     "publicIpAddressDNSName": "[concat('labvm', uniqueString(resourceGroup().id))]",
     "subnetName": "subnet1",
     "location": "[resourceGroup().location]",
