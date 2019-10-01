@@ -28,8 +28,11 @@
         "apiVersion": "2018-01-01",
         "location": "[variables('location')]",
         "tags": {},
+        "sku": {
+          "name": "Basic"
+         },
         "properties": {
-          "publicIPAllocationMethod": "Dynamic",
+          "publicIPAllocationMethod": "Static",
           "dnsSettings": {
             "domainNameLabel": "[concat(variables('publicIpAddressDNSName'))]"
           }
